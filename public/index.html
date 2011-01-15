@@ -1,0 +1,35 @@
+<!-- index.html -->
+<html>
+<head>
+<title>Rolling your own PubSub with DNode!</title>
+<script src="/dnode.js" type="text/javascript"></script>
+<script src="/jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+  jQuery(document).ready(function() {
+    DNode.connect(function (remote) {
+      var em = new EventEmitter;
+      em.on('data', function (err, res) {
+        var last = res.progress.length - 1;
+        var val = Math.floor( (res.progress[last] / 1024) / 1024 );
+        if (val && val !== 'NaN') {
+          jQuery('#output').text(val + "Mb");
+        }
+      });
+      remote.subscribe(function () {
+        // browsers don't usually have .bind() yet
+        em.emit.apply(em, arguments);
+      });
+    });
+  });
+</script>
+</head>
+<body>
+
+<form method="POST" action="/upload" enctype="multipart/form-data">
+  <input type="file" name="file" />
+  <input type="submit" value="Upload" />
+</form>
+<div id="output"></div>
+</body>
+</html>
