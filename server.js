@@ -39,7 +39,7 @@ server.use('/upload', function(req, res, next) {
     .on('end', function() {
       tracker.ended = true;
       publish('data', null, tracker);
-      clearTimeout(push);
+      clearInterval(push);
     })
   })
   
